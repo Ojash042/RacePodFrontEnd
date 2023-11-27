@@ -1,29 +1,52 @@
 <script>
     import axios from "axios"
-    import { isPlaying, playing, queue,seeekTime } from "../stores";
+    export let key;
+    import { isPlaying, justPlayed, playing, queue,seeekTime } from "../stores";
     import {Howl, Howler} from "howler";
     import Home from "../lib/Home.svelte";
     import { tick } from "svelte";
 
     let error;
+    console.log("key+ " + key)
     $: play = JSON.parse($queue)[0] || {}; 
     let response;
     const url = "http://localhost:5050/podcast?id=3";
 
     $:  sound = new Howl({
-            src:[`${play["audioSource"]}`],
-            format:["mp3"],
-            html5:true,
-    })
-    
+                src: [`${play["audioSource"]}`],
+                format: ["mp3"],
+            }); 
+            
     $: id= 0
-    
+    $: $queue, (()=>{
+        console.log("hello");
+        sound = new Howl({
+            src: [`${play["audioSource"]}`],
+            format: ["mp3"],
+            html5:true,
+        })
+    })();
+    $: $justPlayed, (()=>{
+        if($justPlayed===true){
+            console.log("hell")
+            console.log(listOfId[0]);
+            sound.pause(id);
+            listOfId.shift();
+            console.log(id);
+            justPlayed.set(false);
+        }
+    })();
     //@ts-ignore
-    $: $isPlaying ? id = sound.play() : sound.pause();
+    $: $isPlaying ? id = sound.play() : sound.pause(); 
+    $:listOfId = []; 
+    $:{
+        if(!listOfId.includes(id) && id!==0){
+            listOfId.push(id);
+        }
+    }
     let seek = 1;
     let soundBufferd = false;
     let duration;
-    let buttonCounter = 0;
     let volume = 1;
     setInterval(()=>{
         //console.log(Number(JSON.stringify(sound.seek())))
@@ -31,8 +54,7 @@
         soundBufferd = sound.playing(id) && $isPlaying;
         duration = sound.duration()
         volume = Number(sound.volume());
-        console.log(duration)
-    },100)
+    },50)
     sound = sound
     //let currentPlaying = {}
     //const play = playing.subscribe((value)=> {
@@ -62,6 +84,9 @@
         "playing":"fa-pause",
     }
     function testSound(){
+        if(JSON.stringify(play)==="{}"){
+            return ""
+        }
         if (($isPlaying && !sound.playing()) || (JSON.stringify(play)==="{}")){
             return "loading"
         }
@@ -79,9 +104,18 @@
     <div class="widget-info bg-secondary  d-flex">
         <div class=" flex-row align-items-center m-auto w-25 d-flex">
             <img class="poster" src="{JSON.stringify(play) === "{}"  ? "https://cdn.pixabay.com/photo/2014/06/03/19/38/road-sign-361514_960_720.png": play["podcastImage"]}" width="80" height="80"  alt="hell"/>
+            <div class="flex-column p-auto m-auto d-flex align-items-start" style="font-size:small;">
+                <div class="row ms-1" style="font-weight: bold;">
+                    {play["title"] === undefined ? "": play["title"].split(" ").slice(0,8).join(" ") + (play["title"].split(" ").length> 7?"...":"")} 
+                </div>
+                
+                <div class="flex-row ms-1 p-auto d-flex" style="font-weight: lighter;">
+                    {play["podcastTitle"] === undefined ? "": play["podcastTitle"]}
+                </div>
+            </div>
         </div>
-        <div class="podcast-info w-50 d-flex flex-row justify-content-center align-items-center m-auto">
-            <div class="flex-column m-0 d-flex align-items-center">
+                <div class="podcast-info w-50 d-flex flex-row justify-content-center align-items-center">
+            <div class="flex-column d-flex align-items-center">
             {#key $isPlaying}
             {#key $queue}
             {#key soundBufferd}

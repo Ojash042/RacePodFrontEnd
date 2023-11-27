@@ -1,9 +1,24 @@
 <script>
+// @ts-nocheck
+
 import {Router,Link, Route} from "svelte-routing";
 import Counter from "./lib/Counter.svelte";
 import PodcastDetails from "./lib/PodcastDetails.svelte";
 import Home from "./lib/Home.svelte";
 import Player from "./component/Player.svelte";
+import { justPlayed } from "./stores";
+    import { Howler } from "howler";
+
+  let playerId = 0;
+  
+  $: $justPlayed,(()=>{
+    console.log("halse")
+    if($justPlayed===true){
+      console.log("false")
+      playerId++;
+      Howler.init();
+    }
+  })();
 </script>
 
 <Router><!--
@@ -49,5 +64,7 @@ import Player from "./component/Player.svelte";
   <Route path="/Counter" component={Counter}/>
   <Route path="/" component={Home}></Route>
 </Router>
-
-<Player/>
+{#key $justPlayed === false}
+  
+  <Player {playerId}/>
+{/key}

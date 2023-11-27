@@ -3,8 +3,9 @@
     import Player from "../component/Player.svelte";
     import PodcastInfoPlayer from "../component/PodcastPlayer.svelte";
     import axios from "axios";
-    import { queue } from "../stores";
+    import { queue, justPlayed } from "../stores";
     import { parse } from "svelte/compiler";
+    import { Howler } from "howler";
 
     export let id;
     let url = "http://192.168.101.13:5050/podcast?id=3"
@@ -52,7 +53,21 @@
          {#each response["episodes"] as episode, index}
             <div class="d-flex py-3 my-3  flex-column">
                 <div class="d-inline-flex border border-1 border-white bg-secondary">
-                    <button class="btn btn-secondary fa-solid fa-play d-flex align-items-center " on:click={()=>dispatchPlay(episode)}>
+                    <button class="btn btn-secondary fa-solid fa-play d-flex align-items-center"
+                     disabled = {
+                        (($queue!=="[]") && (JSON.parse($queue)[0]["title"]===episode["title"]))
+                     }
+                     on:click={()=>{
+                        let temp = JSON.parse($queue);
+                        let item = JSON.parse(JSON.stringify(episode));
+                        item["podcastImage"] = response["image"];
+                        item["podcastTitle"] = response["title"];
+                        item["author"] = response["author"];
+                        Howler.unload();
+                        justPlayed.set(true);
+                        temp.unshift(item);
+                        queue.set(JSON.stringify(temp));
+                    }}>
                     </button>
                     <div class="p-2 bd-highlight d-flex m-auto justify-content-start bg-secondary">{episode["title"]}</div>
                     <div class="justify-content-end d-flex m-auto">

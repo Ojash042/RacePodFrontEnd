@@ -5,6 +5,7 @@ export const queue = writable(storedQueue!==null ? storedQueue : JSON.stringify(
 export const seeekTime = writable(0);
 export const playing = writable(0)
 export const isPlaying = writable(false);
+export const justPlayed = writable(false);
 
 queue.subscribe((value)=>{
     localStorage.setItem("queue",value)}
