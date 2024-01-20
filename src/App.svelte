@@ -66,5 +66,5 @@ import { justPlayed } from "./stores";
 </Router>
 {#key $justPlayed === false}
   
-  <Player {playerId}/>
+<Player {playerId}/>
 {/key}
