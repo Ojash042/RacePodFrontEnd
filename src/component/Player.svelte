@@ -84,9 +84,9 @@
         "playing":"fa-pause",
     }
     function testSound(){
-        if(JSON.stringify(play)==="{}"){
-            return ""
-        }
+        /* if(JSON.stringify(play)==="{}"){
+            return "playing"
+        }*/
         if (($isPlaying && !sound.playing()) || (JSON.stringify(play)==="{}")){
             return "loading"
         }
@@ -123,6 +123,7 @@
                 <button class="btn flex-row d-flex btn-secondary fa-solid bg-transparent border-0 fa-backward" disabled={testSound()==="loading"} on:click={()=>sound.seek(Math.max(seek-15,0))}></button>
                 <button class="btn flex-row d-flex btn-secondary fa-solid bg-transparent border-0 {playButtonState[testSound()]}" disabled={testSound()==="loading"} on:click={()=>{
                 isPlaying.update((val)=>!val);
+            {console.log(testSound())}
             }}></button>
             <button class="btn flex-row d-flex btn-secondary fa-solid bg-transparent border-0 fa-forward" disabled={testSound()==="loading"} on:click={()=>sound.seek(Math.min(seek+15,duration))}></button>
             </div>

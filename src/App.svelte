@@ -52,8 +52,8 @@ import { justPlayed } from "./stores";
         </Link>
         <hr>
         <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
-            <li class="nav-item">
-              <a class="nav-link bg-dark active mb-3">Queue</a>
+            <li class="nav-item"> 
+              <a class="nav-link bg-dark active mb-3" href="#">Queue</a>
             </li>
         </ul>
         <hr>

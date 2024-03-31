@@ -8,7 +8,7 @@
     import { Howler } from "howler";
 
     export let id;
-    let url = "http://192.168.101.13:5050/podcast?id=3"
+    let url = `http://localhost:5050/${id}`
     let response;
     let err;
     let queueVal = [];
@@ -24,6 +24,7 @@
         try{
             const res = await axios.get(url)
             response = res.data
+            console.log(response)
         }
         catch (e) {
             err =  e;
@@ -39,7 +40,6 @@
         <div class="d-flex">
             <div class="py-3 w-25">
                 <img src="{response["image"]}" alt="{response["title"]}" width="120" height="120"/>
-                
             </div>
             <div class="d-flex w-75 text-align-center justify-content-left align-items-center">
                 <h2><strong>{response["title"]}</strong></h2>
