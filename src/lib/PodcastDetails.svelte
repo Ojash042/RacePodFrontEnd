@@ -6,6 +6,7 @@
     import { queue, justPlayed } from "../stores";
     import { parse } from "svelte/compiler";
     import { Howler } from "howler";
+    import EpisodeDetails from "../component/EpisodeDetails.svelte";
 
     export let id;
     let url = `http://localhost:5050/${id}`
@@ -34,7 +35,7 @@
     })
 </script>
 
-<div class="px-4 container-fluid justify-content-end m-auto p-auto bg-dark text-white w-75">
+<div class="px-4 mb-5 container-fluid justify-content-end m-auto p-auto bg-dark text-white w-75">
 {#if (response!==undefined)}
     <div>
         <div class="d-flex">
@@ -51,48 +52,10 @@
         <hr>
     <div class="">
          {#each response["episodes"] as episode, index}
-            <div class="d-flex py-3 my-3  flex-column">
-                <div class="d-inline-flex border border-1 border-white bg-secondary">
-                    <button class="btn btn-secondary fa-solid fa-play d-flex align-items-center"
-                     disabled = {
-                        (($queue!=="[]") && (JSON.parse($queue)[0]["title"]===episode["title"]))
-                     }
-                     on:click={()=>{
-                        let temp = JSON.parse($queue);
-                        let item = JSON.parse(JSON.stringify(episode));
-                        item["podcastImage"] = response["image"];
-                        item["podcastTitle"] = response["title"];
-                        item["author"] = response["author"];
-                        Howler.unload();
-                        justPlayed.set(true);
-                        temp.unshift(item);
-                        queue.set(JSON.stringify(temp));
-                    }}>
-                    </button>
-                    <div class="p-2 bd-highlight d-flex m-auto justify-content-start bg-secondary">{episode["title"]}</div>
-                    <div class="justify-content-end d-flex m-auto">
-                        <button class="btn btn-secondary align-items-center d-flex fa-solid 
-                        {(JSON.parse($queue).filter(e=> e["title"] === episode["title"])).length>0?"fa-tasks":"fa-list"}"
-                        on:click={()=>{
-                            let temp = JSON.parse($queue)
-                            let item = JSON.parse(JSON.stringify(episode));
-                            item["podcastImage"] = response["image"];
-                            item["podcastTitle"] = response["title"];
-                            item["author"] = response["author"] ;
-                            temp.push(item);
-                            queue.set(JSON.stringify(temp))
-
-                        }} disabled={JSON.parse($queue).filter(e=>e["title"]===episode["title"]).length>0}></button>
-                    </div>
-                    <div class="justify-content-end d-flex m-auto">
-                        <a class="btn btn-secondary align-items-center d-flex fa-solid fa-download" target="_blank" href="{episode["audioSource"]}"  download></a>
-                    </div>
-                </div>
-                
-                <div class="flex-grow-xl p-2" id={""+index}>{@html episode["episodeDescription"]}</div>
-            </div>
+            <EpisodeDetails episode={episode} response={response} index={index}/>
          {/each}   
     </div>
+    <div class="mb-4 py-4"></div>
     </div>
 {/if}
 </div>    
