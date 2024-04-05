@@ -6,7 +6,7 @@
 
     onMount(async ()=>{
         try{
-            const res = await axios.get("http://localhost:5050/")
+            const res = await axios.get("http://192.168.101.14:5050/")
             response = res.data
             console.log(response)
         }
@@ -14,7 +14,6 @@
             alert(e);
         }
     })
-
 
 </script>
 

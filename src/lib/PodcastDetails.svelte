@@ -29,16 +29,24 @@
     const handleScroll=()=>{
         const {scrollTop, clientHeight, scrollHeight} = document.documentElement;
 
-        console.log(scrollTop, clientHeight, scrollHeight)
         if (scrollTop + clientHeight >= scrollHeight -100){
             addRemainingEpisodes();
         }
     }
 
     
+    onMount(async ()=> {
+        try {
+            await axios.get(`http://192.168.101.14:5050/UpdateEpisodes/${id}`);
+
+        } 
+        catch (error) {
+            
+        }
+    })
 
     onMount(async ()=>{
-        window.addEventListener('scroll', ()=>{console.log("hello")})
+        window.addEventListener('scroll', ()=>{})
         try{
             const res = await axios.get(url)
             response = res.data
@@ -46,12 +54,10 @@
         }
         catch (e) {
             err =  e;
-            console.log(e)
             alert(e);
         }
     })
     onMount(async ()=>{
-        console.log("hello")
         window.addEventListener('scroll', handleScroll);
         return ()=>{
             window.removeEventListener('scroll', handleScroll);
@@ -63,12 +69,15 @@
     
 
     async function addRemainingEpisodes(){
+        if(allItemsLoaded){
+            return
+        }
         try{
             let result;
+            pageNo++;
             const res = await axios.get(`http://localhost:5050/api/getNextPage/?guid=${id}&page=${pageNo}`);
             result = await res.data;
             response["episodes"] = [...response["episodes"], ...result];
-            pageNo++;
             if(result.length < 30){
                 allItemsLoaded = true;
             }
