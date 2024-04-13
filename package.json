@@ -4,16 +4,19 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --host 0.0.0.0",
+    "dev": "vite --host 0.0.0.0 --port 4242",
     "build": "vite build",
     "preview": "vite preview",
-    "host": "vite --host"
+    "host": "vite --host 0.0.0.0 ,-port 4224",
+    "tauri": "tauri"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^2.4.2",
+    "@tauri-apps/cli": "^1.5.11",
     "svelte": "^4.0.5",
     "svelte-routing": "^2.6.0",
-    "vite": "^4.4.5"
+    "vite": "^4.4.5",
+    "vite-plugin-terminal": "^1.2.0"
   },
   "dependencies": {
     "axios": "^1.6.0",

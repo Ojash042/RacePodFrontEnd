@@ -1,6 +1,8 @@
 <script>
     import axios from "axios";
+    import { getLocalIP } from "../util";
     export let key;
+
     import {
         isPlaying,
         justPlayed,
@@ -11,12 +13,18 @@
     import { Howl, Howler } from "howler";
     import Home from "../lib/Home.svelte";
     import { tick } from "svelte";
+    import { config } from "../config";
+
+    
+    console.log(getLocalIP());
 
     let error;
+
     console.log("key+ " + key);
     $: play = JSON.parse($queue)[0] || {};
     let response;
-    const url = "http://192.168.101.14:5050/podcast?id=3";
+    let socket = `http://${config["localIpAddress"]}:${config["backendPort"]}`;
+
 
     $: sound = new Howl({
         src: [`${play["audioSource"]}`],

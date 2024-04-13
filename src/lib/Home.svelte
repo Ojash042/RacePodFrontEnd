@@ -1,12 +1,19 @@
 <script>
     import axios from "axios";
     import { onMount, createEventDispatcher } from "svelte";
+    import { getLocalIP } from "../util";
+    import { config } from "../config";
+    import { Link, Route, Router } from "svelte-routing";
+
     $: response = [];
     const dispatcher = createEventDispatcher();
 
     onMount(async ()=>{
         try{
-            const res = await axios.get("http://192.168.101.14:5050/")
+            let url = config["localIpAddress"];
+            let port = config["backendPort"];
+            
+            const res = await axios.get(`http://${url}:${port}`);
             response = res.data
             console.log(response)
         }
@@ -17,21 +24,27 @@
 
 </script>
 
+<Router>
 <div class="py-3 container-fluid text-white w-75">
     {#if response !== undefined}
     <h1 style="font-weight: bold;">Your Podcasts</h1>
         <div class="row ">
         {#each response as val}
-            <a class="col-md-4" style="text-decoration: none; color:white" href="/podcast/{val["podcastSeriesId"]}">
+            <Link class="col-md-4 text-decoration-none" to="/podcast/{val["podcastSeriesId"]}"let:params>
                 <div class="card m-3 p-3" style="width: 18rem;">
                     <img class="card-img-top" src="{val["image"]}" alt={response["title"]} />
                     <div class="card-body">
-                        <h5>{val["title"]}</h5>
-                        <h6>By: {val["author"]}</h6>
+                        <h5 class="text-light text-decoration-none">{val["title"]}</h5>
+                        <h6 class="text-light">By: {val["author"]}</h6>
                     </div>
                 </div>
-            </a>
+            </Link>
+            
+            
+                
+            
         {/each}
         </div>
     {/if}
 </div>
+</Router>

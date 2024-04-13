@@ -1,6 +1,7 @@
 <script>
 // @ts-nocheck
 
+
     import { onMount, createEventDispatcher, getAllContexts } from "svelte";
     import Player from "../component/Player.svelte";
     import PodcastInfoPlayer from "../component/PodcastPlayer.svelte";
@@ -10,9 +11,12 @@
     import { Howler } from "howler";
     import EpisodeDetails from "../component/EpisodeDetails.svelte";
     import InfiniteScroll from "../component/InfiniteScroll.svelte";
+    import terminal from "virtual:terminal";
+    import { config } from "../config";
 
     export let id;
-    let url = `http://localhost:5050/${id}`
+    let socket = `http://${config["localIpAddress"]}:${config["backendPort"]}`;
+    let url = `${socket}/${id}`;
     let response;
     let err;
     let queueVal = [];
@@ -37,11 +41,10 @@
     
     onMount(async ()=> {
         try {
-            await axios.get(`http://192.168.101.14:5050/UpdateEpisodes/${id}`);
-
+            await axios.get(`${socket}/UpdateEpisodes/${id}`);
         } 
         catch (error) {
-            
+         console.log(error)   
         }
     })
 
@@ -51,9 +54,13 @@
             const res = await axios.get(url)
             response = res.data
             pageNo++;
+        
         }
         catch (e) {
             err =  e;
+            terminal.log("hello")
+            terminal.log(e)
+            console.log(e);
             alert(e);
         }
     })
@@ -75,7 +82,7 @@
         try{
             let result;
             pageNo++;
-            const res = await axios.get(`http://localhost:5050/api/getNextPage/?guid=${id}&page=${pageNo}`);
+            const res = await axios.get(`${socket}/api/getNextPage/?guid=${id}&page=${pageNo}`);
             result = await res.data;
             response["episodes"] = [...response["episodes"], ...result];
             if(result.length < 30){

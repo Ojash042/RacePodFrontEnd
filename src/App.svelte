@@ -7,18 +7,19 @@ import PodcastDetails from "./lib/PodcastDetails.svelte";
 import Home from "./lib/Home.svelte";
 import Player from "./component/Player.svelte";
 import { justPlayed } from "./stores";
-    import { Howler } from "howler";
+import { Howler } from "howler";
 
   let playerId = 0;
   
   $: $justPlayed,(()=>{
-    console.log("halse")
+    console.log(playerId)
     if($justPlayed===true){
-      console.log("false")
+      console.log(`playerId = ${playerId}`);
       playerId++;
       Howler.init();
     }
   })();
+console.log("hello");
 </script>
 
 <Router><!--
@@ -63,8 +64,7 @@ import { justPlayed } from "./stores";
   <Route path="/podcast/:id" let:params><PodcastDetails id="{params.id}"></PodcastDetails></Route>
   <Route path="/Counter" component={Counter}/>
   <Route path="/" component={Home}></Route>
+  {#key $justPlayed == false}
+    <Player {playerId} />
+  {/key}
 </Router>
-{#key $justPlayed === false}
-  
-<Player {playerId}/>
-{/key}
